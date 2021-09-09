@@ -1,12 +1,11 @@
 { nixpkgs ? import <nixpkgs> {} }:
 
-with nixpkgs;
-let
-  hpkgs = haskellPackages;
-  maze = import ./. { haskellPackages = hpkgs; };
-in
 
-mkShell {
-  inputFrom = [ maze ];
-  buildInputs = with hpkgs; [ haskell-language-server ];
+let
+  maze = p: import ./. { haskellPackages = p; };
+in
+with nixpkgs.haskellPackages;
+shellFor {
+  packages = p: with p; [ (maze p) ];
+  buildInputs = [ cabal-install cabal2nix haskell-language-server ];
 }

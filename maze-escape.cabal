@@ -1,11 +1,11 @@
 cabal-version:      3.0
-name:               maze
+name:               maze-escape
 version:            0.1.0.0
 synopsis:
 
 -- A longer description of the package.
 -- description:
-homepage:
+homepage:           https://gitlab.com/Vonfry/maze-escape
 
 -- A URL where users can report bugs.
 -- bug-reports:
@@ -18,8 +18,12 @@ maintainer:         mail@vonfry.name
 -- copyright:
 category:           Game
 extra-source-files: CHANGELOG.md
+common deps
+    build-depends:    base ==4.*
+                    , mtl
 
 library
+    import:           deps
     exposed-modules:  MyLib
 
     -- Modules included in this library but not exported.
@@ -27,13 +31,13 @@ library
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
-    build-depends:    base ^>=4.14.1.0
     hs-source-dirs:   lib
     default-language: Haskell2010
 
 test-suite maze-test
+    import:           deps
     default-language: Haskell2010
     type:             exitcode-stdio-1.0
     hs-source-dirs:   test
-    main-is:          MyLibTest.hs
-    build-depends:    base ^>=4.14.1.0
+    main-is:          Spec.hs
+    build-depends:    hspec ==2.*
