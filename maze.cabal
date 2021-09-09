@@ -1,0 +1,39 @@
+cabal-version:      3.0
+name:               maze
+version:            0.1.0.0
+synopsis:
+
+-- A longer description of the package.
+-- description:
+homepage:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+license:            GPL-3.0-or-later
+license-file:       LICENSE
+author:             Vonfry
+maintainer:         mail@vonfry.name
+
+-- A copyright notice.
+-- copyright:
+category:           Game
+extra-source-files: CHANGELOG.md
+
+library
+    exposed-modules:  MyLib
+
+    -- Modules included in this library but not exported.
+    -- other-modules:
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base ^>=4.14.1.0
+    hs-source-dirs:   lib
+    default-language: Haskell2010
+
+test-suite maze-test
+    default-language: Haskell2010
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          MyLibTest.hs
+    build-depends:    base ^>=4.14.1.0
