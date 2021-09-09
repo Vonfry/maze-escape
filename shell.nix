@@ -1,7 +1,12 @@
 { nixpkgs ? import <nixpkgs> {} }:
 
+with nixpkgs;
 let
-  maze = import ./. { inherit nixpkgs; };
+  hpkgs = haskellPackages;
+  maze = import ./. { haskellPackages = hpkgs; };
 in
 
-maze.envFunc { withHoogle = true; }
+mkShell {
+  inputFrom = [ maze ];
+  buildInputs = with hpkgs; [ haskell-language-server ];
+}
