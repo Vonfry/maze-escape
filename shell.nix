@@ -2,10 +2,12 @@
 
 
 let
-  maze = p: import ./. { haskellPackages = p; };
+  inherit (nixpkgs) haskellPackages;
+  maze-escape = import ./. { inherit haskellPackages; };
 in
-with nixpkgs.haskellPackages;
-shellFor {
-  packages = p: with p; [ (maze p) ];
-  buildInputs = [ cabal-install cabal2nix haskell-language-server ];
-}
+with haskellPackages;
+maze-escape.env.overrideAttrs (oldAttrs: {
+  buildInputs = oldAttrs.buildInputs ++ [
+    cabal-install cabal2nix haskell-language-server
+  ];
+})
