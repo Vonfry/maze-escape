@@ -24,7 +24,8 @@ common deps
 
 library
     import:           deps
-    exposed-modules:  MyLib
+    exposed-modules:  Game.Maze.Data
+                    , Game.Maze
 
     -- Modules included in this library but not exported.
     -- other-modules:
