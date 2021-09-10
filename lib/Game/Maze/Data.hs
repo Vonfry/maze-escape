@@ -1,4 +1,5 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Game.Maze.Data where
 
@@ -12,7 +13,7 @@ data MazeCell = S -- ^ source
 
 newtype MazeMapList pos cell = MazeMapList [[cell]]
 
-newtype MazeMapListPos = MazeMapListPos (Int, Int)
+type MazeMapListPos = (Int, Int)
 
 instance MovableCell MazeCell where
   movable X = False
@@ -21,7 +22,7 @@ instance MovableCell MazeCell where
 instance Maze2D MazeMapList MazeMapListPos MazeCell where
   adjacence map pos = [] -- TODO
 
-  getCell (MazeMapList cells) (MazeMapListPos (x,y)) = cells !! x !! y
+  getCell (MazeMapList cells) (x,y) = cells !! x !! y
 
   source = flip findCellEq S
 
