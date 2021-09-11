@@ -22,6 +22,7 @@ common deps
     build-depends:    base ==4.*
                     , mtl
                     , ilist
+                    , utility-ht
 
 library
     import:           deps
