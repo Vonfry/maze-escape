@@ -15,4 +15,4 @@ class Maze2D map pos cell where
   getCell :: map pos cell -> pos -> cell
 
   shortestEscapePath :: map pos cell -> [pos]
-  shortestEscapePath = source
+  shortestEscapePath = source -- TODO
