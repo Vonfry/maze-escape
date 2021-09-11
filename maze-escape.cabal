@@ -44,3 +44,4 @@ test-suite maze-test
     hs-source-dirs:   test
     main-is:          Spec.hs
     build-depends:    hspec ==2.*
+                    , maze-escape

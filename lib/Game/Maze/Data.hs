@@ -6,6 +6,7 @@ module Game.Maze.Data
   ( MazeCell(..)
   , MazeMapList(..)
   , MazeMapListPos
+  , MazeMap
   )
 where
 
