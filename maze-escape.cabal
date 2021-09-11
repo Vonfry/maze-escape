@@ -23,6 +23,7 @@ common deps
                     , mtl
                     , ilist
                     , utility-ht
+                    , containers
 
 library
     import:           deps
