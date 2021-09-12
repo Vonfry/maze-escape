@@ -1,11 +1,12 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Game.Maze (MovableCell(..), Maze2D(..)) where
 
 import Data.Function (on)
 import Data.Foldable (minimumBy)
 import Data.Ord (comparing)
-import Data.Map (Map(..), empty, insert)
+import Data.Map (Map(..), empty, insert, (!?))
 import Control.Monad.State
 import Control.Monad.Reader
 
@@ -43,21 +44,27 @@ bfs' :: Maze2D map pos cell => pos -> RMapEscape (map pos cell) pos
 bfs' p = do
   maze <- ask
   let curCell = getCell maze p
-  let sources = source maze
-  let dests = destination maze
-  let markedMap = MapEscapeMark { marked = True, toDest = [] }
-  modify $ insert p markedMap
-  toDest <-
-    if p `elem` dests
-      then pure [p]
-      else do
-        let adjNodes = adjacence maze p
-        let movableNodes = filter (movable . getCell maze) adjNodes
-        -- TODO filter marked nodes
-        let nextNodes = movableNodes
-        minAfterPath <- bfs nextNodes
-        case minAfterPath of
-          [] -> pure []
-          _  -> pure $ p : minAfterPath
-  modify $ insert p $ markedMap { toDest = toDest }
-  pure toDest
+      sources = source maze
+      dests = destination maze
+      markedMap = MapEscapeMark { marked = True, toDest = [] }
+      adjNodes = adjacence maze p
+      movableNodes = filter (movable . getCell maze) adjNodes
+      nextNodes = movableNodes
+  escapeState <- get
+  case escapeState !? p of
+    Nothing -> do
+      modify $ insert p markedMap
+      toDest <-
+        if p `elem` dests
+        then pure [p]
+        else do
+          minAfterPath <- bfs nextNodes
+          case minAfterPath of
+            [] -> pure []
+            _  -> pure $ p : minAfterPath
+      modify $ insert p $ markedMap { toDest = toDest }
+      pure toDest
+    Just MapEscapeMark {..} -> pure toDest
+      -- key existing implies isMarked, because it is inserted only after being
+      -- marked.
+
