@@ -1,25 +1,29 @@
 default:
-  image: haskell
+  image: haskell:8.10.4
+  before_script:
+    - "[ -d .cabal ] || cabal update"
   cache:
     paths:
       - .cabal
 
 variables:
-  CABAL_DIR: .cabal
-  CABAL_BUILDDIR: .cabal/dist
+  CABAL_DIR: $CI_PROJECT_DIR/.cabal
+  CABAL_BUILDDIR: $CI_PROJECT_DIR/.cabal/dist
 
 stages:
   - build
   - test
 
 build:
+  stage: build
   script:
-    - cabal build
+    - cabal build --ghc-options=-dynamic
   rules:
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH
     - if: $CI_COMMIT_TAG
 
 test:
+  stage: test
   script:
     - cabal test
   rules:
