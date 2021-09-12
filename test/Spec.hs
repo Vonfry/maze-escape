@@ -10,13 +10,13 @@ main :: IO ()
 main = hspec $
   describe "Escape from maze" $ do
     it "Case 1" $
-      runTestCase case1 `shouldBe` 1
+      runTestCase case1 `shouldBe` 2
     it "Case 2" $
-      runTestCase case2 `shouldBe` 3
+      runTestCase case2 `shouldBe` 4
     it "Case 3" $
-      runTestCase case3 `shouldBe` 3
+      runTestCase case3 `shouldBe` 4
     it "Case 4" $
-      runTestCase case4 `shouldBe` 2
+      runTestCase case4 `shouldBe` 3
 
 runTestCase :: MazeMap -> Int
 runTestCase = length . shortestEscapePath
