@@ -57,5 +57,3 @@ findCellEq :: MazeMap -> MazeCell -> [MazeMapListPos]
 findCellEq (MazeMapList cells) c = ifoldr (flip . ifoldr . f') [] cells
   where
     f' i j cell poss = if cell == c then (i, j) : poss else poss
-
-
