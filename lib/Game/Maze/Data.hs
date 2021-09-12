@@ -38,8 +38,8 @@ instance Maze2D MazeMapList MazeMapListPos MazeCell where
         withLeft = when (x > 0) $ pure left
         withRight = when (x < lrow - 1) $ pure right
         row = cells !! x
-        lrow = length row
-        lcol = length cells
+        lcol = length row
+        lrow = length cells
         up    = (x, y - 1)
         down  = (x, y + 1)
         left  = (x - 1, y)
