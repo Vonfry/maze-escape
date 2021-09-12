@@ -5,14 +5,14 @@ module Game.Maze (MovableCell(..), Maze2D(..)) where
 import Data.Function (on)
 import Data.Foldable (minimumBy)
 import Data.Ord (comparing)
-import Data.Map (Map(..), empty)
+import Data.Map (Map(..), empty, insert)
 import Control.Monad.State
 import Control.Monad.Reader
 
 class MovableCell cell where
   movable :: cell -> Bool
 
-class Eq pos => Maze2D map pos cell where
+class (MovableCell cell, Ord pos) => Maze2D map pos cell where
   adjacence :: map pos cell -> pos -> [pos]
 
   source :: map pos cell -> [pos]
@@ -25,8 +25,6 @@ class Eq pos => Maze2D map pos cell where
   shortestEscapePath = flip evalState empty . runBfs
     where
       runBfs = runReaderT =<< bfs . source
-      bfs :: [pos] -> RMapEscape map pos
-      bfs _ = pure []
 
 data MapEscapeMark pos =
   MapEscapeMark { marked :: Bool
@@ -37,3 +35,29 @@ type RMapEscape map pos = ReaderT map (RMapEscapeState pos) [pos]
 
 filterMinLength :: [[pos]] -> [pos]
 filterMinLength = minimumBy $ comparing length
+
+bfs :: Maze2D map pos cell => [pos] -> RMapEscape (map pos cell) pos
+bfs = fmap filterMinLength . traverse bfs'
+
+bfs' :: Maze2D map pos cell => pos -> RMapEscape (map pos cell) pos
+bfs' p = do
+  maze <- ask
+  let curCell = getCell maze p
+  let sources = source maze
+  let dests = destination maze
+  let markedMap = MapEscapeMark { marked = True, toDest = [] }
+  modify $ insert p markedMap
+  toDest <-
+    if p `elem` dests
+      then pure [p]
+      else do
+        let adjNodes = adjacence maze p
+        let movableNodes = filter (movable . getCell maze) adjNodes
+        -- TODO filter marked nodes
+        let nextNodes = movableNodes
+        minAfterPath <- bfs nextNodes
+        case minAfterPath of
+          [] -> pure []
+          _  -> pure $ p : minAfterPath
+  modify $ insert p $ markedMap { toDest = toDest }
+  pure toDest
