@@ -23,9 +23,9 @@ class (MovableCell cell, Ord pos) => Maze2D map pos cell where
   getCell :: map pos cell -> pos -> cell
 
   shortestEscapePath :: map pos cell -> [pos]
-  shortestEscapePath = flip evalState empty . runBfs
+  shortestEscapePath = flip evalState empty . runDfs
     where
-      runBfs = runReaderT =<< bfs . source
+      runDfs = runReaderT =<< dfs . source
 
 data MapEscapeMark pos =
   MapEscapeMark { marked :: Bool
@@ -37,11 +37,11 @@ type RMapEscape map pos = ReaderT map (RMapEscapeState pos) [pos]
 filterMinLength :: [[pos]] -> [pos]
 filterMinLength = minimumBy $ comparing length
 
-bfs :: Maze2D map pos cell => [pos] -> RMapEscape (map pos cell) pos
-bfs = fmap filterMinLength . traverse bfs'
+dfs :: Maze2D map pos cell => [pos] -> RMapEscape (map pos cell) pos
+dfs = fmap filterMinLength . traverse dfs'
 
-bfs' :: Maze2D map pos cell => pos -> RMapEscape (map pos cell) pos
-bfs' p = do
+dfs' :: Maze2D map pos cell => pos -> RMapEscape (map pos cell) pos
+dfs' p = do
   maze <- ask
   let curCell = getCell maze p
       sources = source maze
@@ -58,7 +58,7 @@ bfs' p = do
         if p `elem` dests
         then pure [p]
         else do
-          minAfterPath <- bfs nextNodes
+          minAfterPath <- dfs nextNodes
           case minAfterPath of
             [] -> pure []
             _  -> pure $ p : minAfterPath
