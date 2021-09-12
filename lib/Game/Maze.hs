@@ -1,5 +1,6 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE ViewPatterns #-}
 
 module Game.Maze (MovableCell(..), Maze2D(..)) where
 
@@ -35,7 +36,14 @@ type RMapEscapeState pos = State (Map pos (MapEscapeMark pos))
 type RMapEscape map pos = ReaderT map (RMapEscapeState pos) [pos]
 
 filterMinLength :: [[pos]] -> [pos]
-filterMinLength = minimumBy $ comparing length
+filterMinLength poss =
+  case filterOutNull poss of [] -> []
+                             poss -> filterByMin poss
+    where
+      filterByMin = minimumBy $ comparing length
+
+filterOutNull = filter $ not . null
+
 
 dfs :: Maze2D map pos cell => [pos] -> RMapEscape (map pos cell) pos
 dfs = fmap filterMinLength . traverse dfs'
